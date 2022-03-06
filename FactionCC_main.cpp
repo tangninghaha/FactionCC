@@ -118,14 +118,19 @@ int Menu() {
             Study();
             break;
         case 3:
+//            Practice();
             break;
         case 4:
+//            Find();
             break;
         case 5:
+//            Translate();
             break;
         case 6:
+//            Settings();
             break;
         case 7:
+//            History();
             break;
         default:
             SetColor(Color_Red);
@@ -193,3 +198,4 @@ void Study() {
     }
     
 }
+
