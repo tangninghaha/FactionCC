@@ -1,2 +1,4 @@
 *.exe
 gmon.out
+Data/
+.vscode/
