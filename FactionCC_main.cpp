@@ -8,6 +8,7 @@
 #include <iostream>
 #include <direct.h>
 #include <time.h>
+#include <limits>
 
 using namespace std;
 
@@ -21,8 +22,8 @@ using namespace std;
 #define Color_White 7
 
 /* constant definition */
-const int kFuncitons_num = 7;
-const string kFuncitons_name[7] = {"Import", "Study", "Practice", "Find", "Translate", "Settings", "History"};
+const int kFuncitons_num = 8;
+const string kFuncitons_name[kFuncitons_num] = {"Import", "Study", "Practice", "Find", "Translate", "Settings", "History", "About"};
 const int kMax_word = 10000001;
 
 /* global variable */
@@ -42,6 +43,7 @@ void Find();
 void Translate();
 void Settings();
 void History();
+void About();
 
 void ReadWordFile();
 void Mkdir();
@@ -68,13 +70,14 @@ void ReadWordFile()
 
 int main()
 {
-    /* system("mode con cols=50 lines=25"); */
+    system("mode con cols=50 lines=25");
+    system("chcp 65001");
     printf("Start successfully...\n");
     clock_t file_time_start = clock();
     ReadWordFile();
     clock_t file_time_end = clock();
     printf("Read Files successfully\n");
-    printf("use time: %lf(s)\n", (double)(file_time_end - file_time_start) / CLOCKS_PER_SEC);
+    printf("use time: %.2lf(s)\n", (double)(file_time_end - file_time_start) / CLOCKS_PER_SEC);
     system("pause");
     Init();
     while (true)
@@ -85,6 +88,8 @@ int main()
             Init();
             SetColor(Color_Red);
             printf("[AD] Advertising space for rent\n");
+            printf("It will be closing in three seconds\n");
+            Sleep(3000);
             return 0;
         }
         if (!ret_num)
@@ -97,7 +102,7 @@ void Init()
 {
     system("cls");
     SetColor(Color_Grey);
-    printf("Version: v0.0.1\n");
+    printf("Version: v0.0.2\n");
     printf("Welcome to FactionCC!\n\n");
     SetColor(Color_White);
 }
@@ -139,17 +144,20 @@ int Menu()
         Practice();
         break;
     case 4:
-        //            Find();
+        // Find();
         break;
     case 5:
-        //            Translate();
+        // Translate();
         break;
     case 6:
-        //            Settings();
+        // Settings();
         break;
     case 7:
-        //            History();
+        // History();
         break;
+    case 8:
+    	About();
+    	break;
     default:
         SetColor(Color_Red);
         printf("Error input!\n");
@@ -160,7 +168,19 @@ int Menu()
     }
     return ret_num;
 }
+void About()
+{
+	Init();
+	
+	SetColor(Color_White);
+	printf("Copyright 2022 AirFang Betterer.\n");
+	printf("All rights reserved\n");
+	printf("Follow Mozilla Public License Version 2.0\n");
+	printf("Author: Tangninghaha\n");
 
+	system("pause");
+	return;
+}
 void Import()
 {
     Init();
@@ -210,8 +230,6 @@ void Practice()
 {
     srand(time(0));
     Init();
-    SetColor(Color_Grey);
-    printf("Input \"***\" to break\n\n");
     SetColor(Color_White);
     int num;
     printf("How many word do you want to practice?:\n");
@@ -221,17 +239,21 @@ void Practice()
     string ans;
     for (int i = 1; i <= num; ++i)
     {
-        guess_time = 0;
-        SetColor(Color_Grey);
-        printf("\nTest %d/%d\n", i, num);
         t = rand() % word_num + 1;
+        guess_time = 0;
+Again:
+    	Init();
+	    SetColor(Color_Grey);
+	    printf("Input \"***\" to break\n");
+	    SetColor(Color_White);
+        SetColor(Color_Grey);
+        printf("Test %d/%d\n", i, num);
         SetColor(Color_White);
         printf("What \"");
         SetColor(Color_Green);
         printf("%s", word_chinese[t].c_str());
         SetColor(Color_White);
         printf("\" in English?\n");
-    Again:
         SetColor(Color_Yellow);
         cin >> ans;
         if (ans == word_english[t])
@@ -239,17 +261,23 @@ void Practice()
             SetColor(Color_White);
             printf("You are right\n");
             system("pause");
-            getchar();
             continue;
         }
+        else if (ans == "***")
+        {
+        	return;
+		}
         else
         {
+        	Init();
             SetColor(Color_Red);
             printf("You are wrong! Do you need some tips?\n");
             printf("[1] Answer again\n[2] Get some tips\n[3] Get the answer\n");
             SetColor(Color_White);
             int tmp;
-            cin >> tmp;
+Invalid_operation:
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            tmp = getchar() - 48;
             if (tmp == 1)
             {
                 goto Again;
@@ -263,7 +291,6 @@ void Practice()
                 printf("%s\n", word_english[t].c_str());
                 SetColor(Color_White);
                 system("pause");
-                getchar();
             }
             else if (tmp == 2)
             {
@@ -279,8 +306,17 @@ void Practice()
                 SetColor(Color_Green);
                 printf("%s\n", word_english[t].substr(0, guess_time).c_str());
                 SetColor(Color_White);
+                system("pause");
                 goto Again;
             }
+            else
+            {
+            	SetColor(Color_Red);
+            	printf("Invalid operation\n");
+            	SetColor(Color_White);
+            	system("pause");
+            	goto Invalid_operation;
+			}
         }
     }
 }
